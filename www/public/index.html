@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Tic Tac Tou - game (Mackrais)</title>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
+          integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+    <link href="https://fonts.googleapis.com/css?family=Lacquer&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Gochi+Hand&display=swap" rel="stylesheet">
+    <link href="./assets/css/main.css" rel="stylesheet">
+    <link href="./assets/css/mr.preloader.css" rel="stylesheet">
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/angularjs/1.7.9/angular.min.js"></script>
+</head>
+<body ng-app="app">
+
+<section loading-listener></section>
+<section error-block></section>
+
+<div id="wrapper" ng-controller="baseCtrl" class="container h-100 ">
+
+    <div ng-controller="startGameCtrl" ng-show="!gameStarted">
+
+        <div class="row align-items-center justify-content-center align-content-center" style="min-height: 100%">
+            <div class="col-12 pt-1 pt-sm-2 pb-1 pb-sm-3">
+                <div class="row">
+                    <div class="col text-center">
+                        <h1>Tic Tac Toe</h1>
+                        <h4>Show me what you can do.</h4>
+                    </div>
+                </div>
+            </div>
+            <form ng-submit="start()" class="sign-in box-shadow">
+                <div class="form-group">
+                    <label for="username">Enter your user name: </label>
+                    <input class="form-control" id="username" ng-model="$parent.user.username" required autofocus>
+                </div>
+
+                <div class="form-group">
+                    <input id="radio-x" class="radio-custom radio-x" name="radio-group" type="radio"
+                           ng-model="$parent.user.symbol" ng-value="'X'">
+                    <label for="radio-x" class="radio-custom-label"></label>
+
+                    <strong>Please select your symbol</strong>
+
+                    <input id="radio-o" class="radio-custom radio-o" name="radio-group" type="radio"
+                           ng-model="$parent.user.symbol" ng-value="'O'">
+                    <label for="radio-o" class="radio-custom-label"></label>
+
+                </div>
+                <button type="submit" class="btn btn-primary circle-btn-125">Start Game</button>
+            </form>
+        </div>
+    </div>
+
+
+    <div class="box-shadow " ng-show="gameStarted">
+        <h1 ng-show="gameStarted" class="text-center">
+            Hello, <strong ng-bind="user.username"></strong>!
+        </h1>
+        <p class="text-center" ng-show="gameStarted">
+            <small>Your symbol <i ng-bind="user.symbol"></i></small>
+        </p>
+
+
+        <div class="text-center" ng-show="gameStarted && !!winner">
+            <div ng-show="winner === bot.symbol" class="alert alert-danger alert-dismissible fade show" role="alert">
+                <strong>Game over! </strong> I'm sorry, but you lost. Winner <strong ng-bind="bot.username"></strong>
+            </div>
+            <div ng-show="winner === user.symbol" class="alert alert-success alert-dismissible fade show" role="alert">
+                Congratulation <strong ng-bind="user.username"></strong>. You won!
+            </div>
+            <div ng-show="winner === DRAW" class="alert alert-warning alert-dismissible fade show" role="alert">
+                A draw. Not bad. I underestimated you.
+            </div>
+        </div>
+
+
+        <div class="border-area " ng-controller="boardCtrl">
+            <div class="row justify-content-center align-items-center">
+                <div class="col-11 col-sm-8 col-md-7 col-lg-6 col-xl-4 text-center">
+                    <div ng-repeat="(rowIndex, rows) in $parent.board" class="border-area-rows">
+                        <div class="row board" id="row-{{rowIndex}}">
+                            <div
+                                    class="col-4 d-flex justify-content-center align-items-center cell"
+                                    ng-click="makeMove(rowIndex,colIndex)"
+                                    ng-class="{'empty': !cell, 'winner-cell': isWinCell([rowIndex,colIndex]), 'red-symbol': cell === 'X'}"
+                                    ng-repeat="(colIndex, cell) in rows track by $index">
+                                <i ng-bind="cell || user.symbol" class="symbol"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <button class="btn btn-primary mt-5 " ng-click="restartGame()">Restart game</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script type="text/javascript" src="./assets/js/app.js"></script>
+<script type="text/javascript" src="./assets/js/components/http-error.component.js"></script>
+<script type="text/javascript" src="./assets/js/components/preloader/preloader.component.js"></script>
+<script type="text/javascript" src="./assets/js/factories.js"></script>
+<script type="text/javascript" src="./assets/js/controllers.js"></script>
+
+
+</body>
+</html>

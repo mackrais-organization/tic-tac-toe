@@ -1,0 +1,21 @@
+{
+  "name": "mackrais/php-tic-tac-toe",
+  "description": "Tic Tac Toe Game. User vs bot",
+  "type": "project",
+  "config": {
+    "sort-packages": true
+  },
+  "autoload": {
+    "psr-4": {
+      "TicTacToe\\": "src/"
+    }
+  },
+  "require": {
+    "php": "^7.4",
+    "ext-json": "*"
+  },
+  "scripts": {
+    "serve": "php -S 0.0.0.0:4000 -t public/",
+    "serve-xdebug": "php -dxdebug.remote_enable=1 -dxdebug.remote_mode=req -dxdebug.remote_port=9000 -dxdebug.remote_host=127.0.0.1 -dxdebug.remote_connect_back=0 -S 0.0.0.0:4001 -t public/"
+  }
+}
