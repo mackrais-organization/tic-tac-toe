@@ -4,5 +4,3 @@ var app = angular
         $httpProvider.interceptors.push('LoadingListener');
         $httpProvider.interceptors.push('HttpErrorListener');
     });
-
-

@@ -4,7 +4,6 @@ app
   .factory('HttpErrorListener', function ($q, $rootScope) {
     return {
       'responseError': function (rejection) {
-        console.log(rejection);
         $rootScope.httpError = rejection;
         $rootScope.$broadcast('error:show');
         return $q.reject(rejection)
@@ -30,7 +29,10 @@ app
           $scope.show = true;
           $scope.errorCode = $rootScope.httpError.status;
           $scope.errorText = $rootScope.httpError.statusText;
-        })
+          if($rootScope.httpError.hasOwnProperty('data') && $rootScope.httpError.data.hasOwnProperty('message')){
+            $scope.errorText = $rootScope.httpError.data.message;
+          }
+        });
 
         $scope.close = () => $scope.show = false;
       }
