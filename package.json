@@ -1,0 +1,33 @@
+{
+  "name": "@mackrais/tic-tac-toe.loc",
+  "version": "1.0.0",
+  "description": "A good old game of tic tac toe. Try your hand against our wonderful bot. MackRais MiniMax Bot.",
+  "main": "www/public/index.html",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/mackrais/tic-tac-toe.git"
+  },
+  "keywords": [
+    "php",
+    "js",
+    "angularjs",
+    "algorithm",
+    "minimax",
+    "bot",
+    "game",
+    "tic-tac-toue",
+    "tic",
+    "tac",
+    "toe"
+  ],
+  "author": "MackRais",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/mackrais/tic-tac-toe/issues"
+  },
+  "homepage": "https://tic-tac-toe.mackrais.com",
+  "publishConfig": { "registry": "https://npm.pkg.github.com/" }
+}

@@ -50,10 +50,8 @@ app
       UserFactory.create($scope.$parent.user)
         .then(
           (res) => {
-            $scope.$parent.checkGameStarted(res.data)
+            $scope.$parent.checkGameStarted(res.data);
             $scope.$parent.intData(res.data)
-          },
-          (errorData) => {
           }
         )
     }
@@ -71,13 +69,15 @@ app
         return false;
       }
 
+      if($scope.$parent.board[rowIndex][columnIndex]){
+        return  false;
+      }
+
       UserFactory.makeMove(rowIndex, columnIndex)
         .then(
           (res) => {
-            $scope.$parent.checkGameStarted(res.data)
+            $scope.$parent.checkGameStarted(res.data);
             $scope.$parent.intData(res.data)
-          },
-          (errorData) => {
           }
         )
     };
@@ -86,10 +86,8 @@ app
       GameFactory.restartGame()
         .then(
           (res) => {
-            $scope.$parent.checkGameStarted(res.data)
+            $scope.$parent.checkGameStarted(res.data);
             $scope.$parent.intData(res.data)
-          },
-          (errorData) => {
           }
         )
     };

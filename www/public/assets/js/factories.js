@@ -1,23 +1,20 @@
+const API_GAME_URL = 'api/v1/game';
 app
   .factory('GameFactory', function ($http) {
   return {
-    getInfo: () => $http.get('game.php', {params: {'action': 'game-info'}}),
-    restartGame: () => $http.post('game.php', {
-      'action': 'restart',
-    }),
+    getInfo: () => $http.get(API_GAME_URL),
+    restartGame: () => $http.delete(API_GAME_URL),
   }
 })
   .factory('UserFactory', function ($http) {
     return {
-      create: (user) => $http.post('game.php', {
-        'action': 'create-user',
+      create: (user) => $http.post(API_GAME_URL, {
         'username': user.username,
         'symbol': user.symbol,
       }),
-      makeMove: (rowIndex, columnIndex) => $http.post('game.php', {
-        'action': 'make-a-move',
+      makeMove: (rowIndex, columnIndex) => $http.put(API_GAME_URL, {
         'rowIndex': rowIndex,
         'columnIndex': columnIndex,
       }),
     }
-  })
+  });
