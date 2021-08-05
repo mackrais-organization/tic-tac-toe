@@ -23,7 +23,9 @@ use TicTacToe\User\User;
 
 class Board
 {
-    public const ALLOWED_SYMBOLS = ['O', 'X'];
+    public const SYMBOL_O = 'O';
+    public const SYMBOL_X = 'X';
+    public const ALLOWED_SYMBOLS = [self::SYMBOL_O, self::SYMBOL_X];
     public const ROW_SIZE = 3;
     public const COLUMN_SIZE = 3;
 
@@ -117,5 +119,10 @@ class Board
             }
         }
         return $board;
+    }
+
+    public function setUser(User $user): void
+    {
+        $this->user = $user;
     }
 }

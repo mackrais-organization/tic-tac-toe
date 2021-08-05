@@ -26,8 +26,8 @@ use TicTacToe\Game\ResultChecker;
  */
 class MiniMaxBot implements IUser
 {
-    private const MAX_SCORE = PHP_INT_MAX;
-    private const MIN_SCORE = PHP_INT_MIN;
+    private const MAX_SCORE = 4;//PHP_INT_MAX;
+    private const MIN_SCORE = 0;//PHP_INT_MIN;
 
     protected ResultChecker $resultChecker;
     protected ?User $user;
@@ -168,6 +168,11 @@ class MiniMaxBot implements IUser
 
     public function getUserName(): string
     {
-        return 'MackRais MiniMax Bot v1.0';
+        return 'MackRais MiniMax Bot v1.1';
+    }
+
+    public function setUser(User $user): void
+    {
+        $this->user = $user;
     }
 }

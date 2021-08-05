@@ -61,7 +61,7 @@ body{
     position: relative;
 }
 
-.radio-x + .radio-custom-label:before {
+.symbol-X:after, .radio-x + .radio-custom-label:before {
     content: "X";
     font-family: 'Gochi Hand', cursive;
     color: #4a1514;
@@ -71,7 +71,7 @@ body{
     text-align: center;
 }
 
-.radio-o + .radio-custom-label:before {
+.symbol-O:after, .radio-o + .radio-custom-label:before {
     content: "O";
     font-family: 'Gochi Hand', cursive;
     color: #000;
@@ -79,6 +79,9 @@ body{
     display: inline-block;
     vertical-align: middle;
     text-align: center;
+}
+.symbol-X:after, .symbol-O:after{
+    font-size: 2em;
 }
 
 .radio-custom + .radio-custom-label:before {
@@ -116,7 +119,6 @@ body{
     box-shadow: 0 14px 28px rgba(0,0,0,0.25), 0 10px 10px rgba(0,0,0,0.22);
 }
 
-
 .sign-in input, .sign-in input:focus {
     border: 0;
     border-bottom: 1px #000000 solid;
@@ -124,4 +126,8 @@ body{
     color: #000;
     outline: none !important;
     box-shadow: none;
+}
+
+.input-group-prepend label {
+    padding-top: 5px;
 }

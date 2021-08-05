@@ -37,7 +37,14 @@ try {
 
     switch ($action) {
         case "create-user":
-            $user->create($jsonInput['username'] ?? '', $jsonInput['symbol'] ?? '');
+            $symbol = $jsonInput['symbol'] ?? null;
+            $user->create($jsonInput['username'] ?? '', $symbol);
+            if($symbol === Board::SYMBOL_O){
+                $board->setUser($user->get());
+                $bot = new \TicTacToe\User\MiniMaxBot();
+                $bot->setUser($user->get());
+                $bot->makeMove($board);
+            }
             break;
         case "make-a-move":
             $board->makeMove(

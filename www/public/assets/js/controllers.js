@@ -63,6 +63,10 @@ app
 
     $scope.makeMove = (rowIndex, columnIndex) => {
 
+      if($scope.board[rowIndex] && $scope.board[rowIndex][columnIndex]){
+        return false;
+      }
+
       if ($scope.$parent.winner) {
         return false;
       }

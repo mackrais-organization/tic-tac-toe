@@ -31,8 +31,34 @@
             </div>
             <form ng-submit="start()" class="sign-in box-shadow">
                 <div class="form-group">
-                    <label for="username">Enter your user name: </label>
+                    <p>Your Symbol:
+                        <i ng-class="{'symbol-X': $parent.user.symbol == 'X', 'symbol-O': $parent.user.symbol == 'O'}"></i>
+                    </p>
+                </div>
+
+                <div class="input-group ">
                     <input class="form-control" id="username" ng-model="$parent.user.username" required autofocus>
+                </div>
+
+                <div class="form-group mt-2">
+                    <strong>Choose level:</strong>
+                </div>
+
+                <div class="custom-control custom-radio custom-control-inline">
+                    <input type="radio" id="customRadioInline1" name="customRadioInline1" class="custom-control-input">
+                    <label class="custom-control-label" for="customRadioInline1">Easy</label>
+                </div>
+                <div class="custom-control custom-radio custom-control-inline">
+                    <input type="radio" id="customRadioInline2" name="customRadioInline1" class="custom-control-input">
+                    <label class="custom-control-label" for="customRadioInline2">Middle</label>
+                </div>
+                <div class="custom-control custom-radio custom-control-inline">
+                    <input type="radio" id="customRadioInline3" name="customRadioInline1" class="custom-control-input">
+                    <label class="custom-control-label" for="customRadioInline3">Hard</label>
+                </div>
+                <div class="custom-control custom-radio custom-control-inline">
+                    <input type="radio" id="customRadioInline3" name="customRadioInline1" class="custom-control-input">
+                    <label class="custom-control-label" for="customRadioInline3">Unreal hard</label>
                 </div>
 
                 <div class="form-group">
