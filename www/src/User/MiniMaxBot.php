@@ -181,7 +181,7 @@ class MiniMaxBot implements IUser
 
     public function getUserName(): string
     {
-        return 'MackRais MiniMax Bot v1.0.5';
+        return 'MackRais MiniMax Bot v1.0.3';
     }
 
     public function setUser(User $user): void
