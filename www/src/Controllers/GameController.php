@@ -16,6 +16,7 @@ namespace TicTacToe\Controllers;
 use TicTacToe\Board\Board;
 use TicTacToe\Core\Response;
 use TicTacToe\Core\Router;
+use TicTacToe\User\MiniMaxBot;
 use TicTacToe\User\User;
 
 class GameController
@@ -43,7 +44,17 @@ class GameController
     public function startAction(Router $router)
     {
         $params = $router->getRequestBody();
-        $this->user->create($params['username'] ?? '', $params['symbol'] ?? '');
+        $symbol = $params['symbol'] ?? null;
+        $level = $params['level'] ?? '';
+        $this->user->create($params['username'] ?? '', $symbol, $level);
+
+        if($symbol === Board::SYMBOL_O){
+            $this->board->setUser($this->user->get());
+            $bot = new MiniMaxBot();
+            $bot->setUser( $this->user->get());
+            $bot->makeMove($this->board);
+        }
+
         $this->getResponse()->send();
     }
 

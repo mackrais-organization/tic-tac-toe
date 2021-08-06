@@ -1,24 +1,35 @@
 app
-  .controller('baseCtrl', ($scope, GameFactory) => {
-  $scope.DRAW = 'draw';
+  .controller("baseCtrl", ($scope, GameFactory) => {
+  $scope.DRAW = "draw";
   $scope.user = {
-    'username': 'Player',
-    'symbol': 'X'
+    "username": "Player",
+    "symbol": "X",
+    "level": "easy"
   };
   $scope.gameStarted = false;
   $scope.board = [];
   $scope.winner = null;
   $scope.bot = {};
   $scope.winnerCoordinates = [];
+  $scope.levels = [
+    {
+      "level": "easy",
+      "label": "Easy"
+    },
+    {
+      "level": "hard",
+      "label": "Hard"
+    },
+  ];
 
   $scope.intData = (data) => {
     $scope.board = data.board || [];
-    if (data && data.hasOwnProperty('users')) {
-      if (data.users.hasOwnProperty('player')) {
+    if (data && data.hasOwnProperty("users")) {
+      if (data.users.hasOwnProperty("player")) {
         $scope.user.username = data.users.player.userName;
         $scope.user.symbol = data.users.player.symbol;
       }
-      if (data.users.hasOwnProperty('bot')) {
+      if (data.users.hasOwnProperty("bot")) {
         $scope.bot.username = data.users.bot.userName;
         $scope.bot.symbol = data.users.bot.symbol;
       }
@@ -38,14 +49,15 @@ app
   });
 
   $scope.checkGameStarted = (data) => {
-    if (data && data.hasOwnProperty('users')) {
+    if (data && data.hasOwnProperty("users")) {
       $scope.gameStarted = !!data.users.player
     }
   }
 
 })
-  .controller('startGameCtrl', ($scope, $rootScope, UserFactory) => {
+  .controller("startGameCtrl", ($scope, $rootScope, UserFactory) => {
 
+    $scope.getLevel = () => $scope.levels.find((item) => item.level === $scope.user.level)
     $scope.start = () => {
       UserFactory.create($scope.$parent.user)
         .then(
@@ -57,7 +69,7 @@ app
     }
 
   })
-  .controller('boardCtrl', ($scope, $rootScope, UserFactory, GameFactory) => {
+  .controller("boardCtrl", ($scope, $rootScope, UserFactory, GameFactory) => {
 
     $scope.makeMove = (rowIndex, columnIndex) => {
 

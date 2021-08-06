@@ -26,8 +26,13 @@ use TicTacToe\Game\ResultChecker;
  */
 class MiniMaxBot implements IUser
 {
-    private const MAX_SCORE = 4;//PHP_INT_MAX;
-    private const MIN_SCORE = 0;//PHP_INT_MIN;
+    public const LEVEL_EASY = 'easy';
+    public const LEVEL_HARD = 'hard';
+
+    public const LEVELS = [
+        self::LEVEL_EASY => ['min' => 1, 'max' => 1],
+        self::LEVEL_HARD => ['min' => PHP_INT_MIN, 'max' => PHP_INT_MAX],
+    ];
 
     protected ResultChecker $resultChecker;
     protected ?User $user;
@@ -36,6 +41,14 @@ class MiniMaxBot implements IUser
     {
         $this->resultChecker = new ResultChecker();
         $this->user = (new User())->get();
+    }
+
+    protected function getMinScore(): int {
+        return (int)static::LEVELS[$this->user->getLevel()]['min'] ?? 1;
+    }
+    
+    protected function getMaxScore(): int {
+        return (int)static::LEVELS[$this->user->getLevel()]['max'] ?? 1;
     }
 
     public function makeMove(Board $board)
@@ -73,13 +86,13 @@ class MiniMaxBot implements IUser
                         false,
                         $botSymbol,
                         $userSymbol,
-                        self::MIN_SCORE,
-                        self::MAX_SCORE
+                         $this->getMinScore(),
+                         $this->getMaxScore()
                     );
                     if ($bestScore === null || $nextMoveScore > $bestScore) {
                         $bestScore = $nextMoveScore;
                         $bestMove = [$rowIndex, $colIndex];
-                        if ($bestScore == self::MAX_SCORE) {
+                        if ($bestScore ==  $this->getMaxScore()) {
                             break 2;
                         }
                     }
@@ -104,18 +117,18 @@ class MiniMaxBot implements IUser
         $winner = null;
         $this->resultChecker->getWinner($board, $winner);
         if ($winner == $maximizingPlayer) {
-            return self::MAX_SCORE - $depth;
+            return  $this->getMaxScore() - $depth;
         }
         if ($winner == $minimizingPlayer) {
-            return self::MIN_SCORE + $depth;
+            return  $this->getMinScore() + $depth;
         }
         if ($winner == ResultChecker::DRAW) {
             return 0;
         }
 
-        $bestScore = self::MAX_SCORE;
+        $bestScore =  $this->getMaxScore();
         if ($isMaximizingPlayer) {
-            $bestScore = self::MIN_SCORE;
+            $bestScore =  $this->getMinScore();
         }
 
         foreach ($board as $rowIndex => $row) {
@@ -168,7 +181,7 @@ class MiniMaxBot implements IUser
 
     public function getUserName(): string
     {
-        return 'MackRais MiniMax Bot v1.1';
+        return 'MackRais MiniMax Bot v1.0.5';
     }
 
     public function setUser(User $user): void

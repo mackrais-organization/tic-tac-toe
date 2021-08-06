@@ -31,8 +31,10 @@
             </div>
             <form ng-submit="start()" class="sign-in box-shadow">
                 <div class="form-group">
-                    <p>Your Symbol:
+                    <p>
+                        Your Symbol:
                         <i ng-class="{'symbol-X': $parent.user.symbol == 'X', 'symbol-O': $parent.user.symbol == 'O'}"></i>
+                        Your Level: <strong ng-bind="getLevel().label"></strong>
                     </p>
                 </div>
 
@@ -40,26 +42,20 @@
                     <input class="form-control" id="username" ng-model="$parent.user.username" required autofocus>
                 </div>
 
-                <div class="form-group mt-2">
-                    <strong>Choose level:</strong>
-                </div>
+                <!--                -->
+                <div class="row radio-btn-list-inline ">
 
-                <div class="custom-control custom-radio custom-control-inline">
-                    <input type="radio" id="customRadioInline1" name="customRadioInline1" class="custom-control-input">
-                    <label class="custom-control-label" for="customRadioInline1">Easy</label>
+                    <div class="radio-btn-item col" ng-repeat="(key, item) in levels">
+                        <input value="easy" ng-value="item.level" type="radio" class="radio-btn-input" name="select" id="option-{{item.level}}" ng-model="$parent.user.level">
+                        <label for="option-{{item.level}}" class="radio-btn-label option">
+                            <div class="dot"></div>
+                            <span ng-bind="item.label"></span>
+                        </label>
+                    </div>
+
                 </div>
-                <div class="custom-control custom-radio custom-control-inline">
-                    <input type="radio" id="customRadioInline2" name="customRadioInline1" class="custom-control-input">
-                    <label class="custom-control-label" for="customRadioInline2">Middle</label>
-                </div>
-                <div class="custom-control custom-radio custom-control-inline">
-                    <input type="radio" id="customRadioInline3" name="customRadioInline1" class="custom-control-input">
-                    <label class="custom-control-label" for="customRadioInline3">Hard</label>
-                </div>
-                <div class="custom-control custom-radio custom-control-inline">
-                    <input type="radio" id="customRadioInline3" name="customRadioInline1" class="custom-control-input">
-                    <label class="custom-control-label" for="customRadioInline3">Unreal hard</label>
-                </div>
+                <!--                -->
+
 
                 <div class="form-group">
                     <input id="radio-x" class="radio-custom radio-x" name="radio-group" type="radio"

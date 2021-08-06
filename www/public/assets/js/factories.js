@@ -11,6 +11,7 @@ app
       create: (user) => $http.post(API_GAME_URL, {
         'username': user.username,
         'symbol': user.symbol,
+        'level': user.level
       }),
       makeMove: (rowIndex, columnIndex) => $http.put(API_GAME_URL, {
         'rowIndex': rowIndex,
