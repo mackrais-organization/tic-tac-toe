@@ -17,6 +17,10 @@ app
       "label": "Easy"
     },
     {
+      "level": "normal",
+      "label": "Normal"
+    },
+    {
       "level": "hard",
       "label": "Hard"
     },

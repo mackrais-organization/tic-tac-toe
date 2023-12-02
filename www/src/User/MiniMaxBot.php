@@ -27,10 +27,13 @@ use TicTacToe\Game\ResultChecker;
 class MiniMaxBot implements IUser
 {
     public const LEVEL_EASY = 'easy';
+    public const LEVEL_NORMAL = 'normal';
+
     public const LEVEL_HARD = 'hard';
 
     public const LEVELS = [
-        self::LEVEL_EASY => ['min' => 1, 'max' => 1],
+        self::LEVEL_EASY => ['min' => -1, 'max' => 1],
+        self::LEVEL_NORMAL => ['min' => -5, 'max' => 5],
         self::LEVEL_HARD => ['min' => PHP_INT_MIN, 'max' => PHP_INT_MAX],
     ];
 
