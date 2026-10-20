@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 180 180">
+  <title>MackRais Tic Tac Toe</title>
+  <circle cx="55" cy="57" r="32.5" fill="none" stroke="#ff7f8b" stroke-width="13"/>
+  <g fill="#65c5ff" transform="translate(81 62) rotate(9 45.5 45.5)">
+    <rect x="0" y="38" width="91" height="14" rx="3" transform="rotate(45 45.5 45)"/>
+    <rect x="0" y="38" width="91" height="14" rx="3" transform="rotate(-45 45.5 45)"/>
+  </g>
+</svg>
