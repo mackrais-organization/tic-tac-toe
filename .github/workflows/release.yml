@@ -1,0 +1,42 @@
+name: Release
+on:
+  push:
+    tags: ['v*']
+permissions:
+  contents: read
+jobs:
+  checks:
+    uses: ./.github/workflows/php-ci.yml
+  release:
+    needs: checks
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v6
+      - name: Extract versioned changelog
+        env:
+          RELEASE_TAG: ${{ github.ref_name }}
+        run: |
+          python3 - <<'PY'
+          import os, pathlib, re
+          tag = os.environ['RELEASE_TAG']
+          if not re.fullmatch(r'v\d+\.\d+\.\d+', tag):
+              raise SystemExit('Expected tag vMAJOR.MINOR.PATCH')
+          text = pathlib.Path('CHANGELOG.md').read_text()
+          match = re.search(r'^## \[' + re.escape(tag[1:]) + r'\](?: - \d{4}-\d{2}-\d{2})?\n(.*?)(?=^## |\Z)', text, re.M | re.S)
+          if not match or not match[1].strip():
+              raise SystemExit('Add a matching version section to CHANGELOG.md before tagging')
+          pathlib.Path('release-notes.md').write_text(match[1].strip() + '\n')
+          PY
+      - name: Publish GitHub release
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RELEASE_TAG: ${{ github.ref_name }}
+        run: |
+          if gh release view "$RELEASE_TAG" >/dev/null 2>&1; then
+            echo 'Release already exists'
+          else
+            gh release create "$RELEASE_TAG" --verify-tag --title "$RELEASE_TAG" --notes-file release-notes.md
+          fi

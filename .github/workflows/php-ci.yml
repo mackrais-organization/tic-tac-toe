@@ -1,0 +1,79 @@
+name: PHP CI
+
+on:
+  pull_request:
+  push:
+    branches: [main, master, develop]
+  workflow_dispatch:
+  workflow_call:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: php-ci-${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  quality:
+    name: Code quality (PHP 8.5)
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    defaults:
+      run:
+        working-directory: www
+    steps:
+      - uses: actions/checkout@v6
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.5'
+          extensions: mbstring, dom, xml, xmlwriter
+          coverage: none
+          tools: composer:v2
+      - name: Composer cache directory
+        id: cache
+        run: echo "dir=$(composer config cache-files-dir)" >> "$GITHUB_OUTPUT"
+      - uses: actions/cache@v5
+        with:
+          path: ${{ steps.cache.outputs.dir }}
+          key: ${{ runner.os }}-php85-composer-${{ hashFiles('www/composer.lock') }}
+          restore-keys: ${{ runner.os }}-php85-composer-
+      - run: composer install --prefer-dist --no-interaction --no-progress
+      - run: composer ci:quality
+      - name: Validate Compose configurations
+        working-directory: .
+        run: |
+          docker compose config --quiet
+          docker compose -f docker-compose.yml -f docker-compose.local.yml config --quiet
+
+  tests:
+    name: Tests, coverage and mutations (PHP 8.5)
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    defaults:
+      run:
+        working-directory: www
+    steps:
+      - uses: actions/checkout@v6
+      - uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.5'
+          extensions: mbstring, dom, xml, xmlwriter
+          coverage: xdebug
+          tools: composer:v2
+      - run: composer install --prefer-dist --no-interaction --no-progress
+      - run: composer ci:coverage
+      - run: composer test:parallel
+      - run: composer ci:infection
+      - name: HTTP API smoke tests
+        run: composer ci:http
+      - name: Upload reports
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: php85-reports
+          path: |
+            www/var/coverage
+            www/var/infection
+          retention-days: 14
+          if-no-files-found: warn

@@ -1,0 +1,23 @@
+name: PR title
+on:
+  pull_request:
+    types: [opened, edited, synchronize, reopened]
+permissions:
+  contents: read
+jobs:
+  title:
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+    steps:
+      - name: Check Conventional Commit title
+        env:
+          PR_TITLE: ${{ github.event.pull_request.title }}
+        run: |
+          python3 - <<'PY'
+          import os, re, sys
+          title = os.environ['PR_TITLE']
+          pattern = r'^(feat|fix|refactor|chore|docs|test|perf|build|ci|style|revert)(\([^)]+\))?!?: .{3,}$'
+          if not re.fullmatch(pattern, title):
+              print('Use a Conventional Commit title, e.g. fix(bot): correct normal difficulty')
+              sys.exit(1)
+          PY
