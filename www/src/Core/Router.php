@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Created by PhpStorm.
  * PHP Version: 7.4
@@ -13,31 +14,32 @@
 namespace TicTacToe\Core;
 
 use TicTacToe\Exception\NotAllowedException;
+use TicTacToe\Exception\InvalidValidation;
 use TicTacToe\Exception\NotFoundException;
 
 class Router
 {
-    const METHOD_GET = 'GET';
-    const METHOD_OPTIONS = 'OPTIONS';
-    const METHOD_HEAD = 'HEAD';
-    const METHOD_PUT = 'PUT';
-    const METHOD_PATCH = 'PATCH';
-    const METHOD_DELETE = 'DELETE';
-    const METHOD_POST = 'POST';
+    public const METHOD_GET = 'GET';
+    public const METHOD_OPTIONS = 'OPTIONS';
+    public const METHOD_HEAD = 'HEAD';
+    public const METHOD_PUT = 'PUT';
+    public const METHOD_PATCH = 'PATCH';
+    public const METHOD_DELETE = 'DELETE';
+    public const METHOD_POST = 'POST';
 
     /**
      * Router table
      *
      * @var array
      */
-    protected static array $routes = [];
+    protected array $routes = [];
 
     /**
      * Current router
      *
      * @var array
      */
-    protected static array $route = [];
+    protected array $route = [];
 
     protected string $requestUri;
 
@@ -48,7 +50,7 @@ class Router
     public function __construct()
     {
         $query = $_SERVER['REQUEST_URI'] ?? '';
-        $this->requestUri =  rtrim(ltrim($query, '/'),'/');;
+        $this->requestUri =  rtrim(ltrim($query, '/'), '/');
 
         $this->method = $_SERVER['REQUEST_METHOD'] ?? '';
         if ($this->method == 'POST' && array_key_exists('HTTP_X_HTTP_METHOD', $_SERVER)) {
@@ -64,9 +66,17 @@ class Router
         }
 
         $input = file_get_contents('php://input');
-        if(!empty($input)){
-            $this->requestBodyParams =  json_decode(($input), true);
-        }else{
+        if ($input !== false && $input !== '') {
+            try {
+                $body = json_decode($input, false, 512, JSON_THROW_ON_ERROR);
+            } catch (\JsonException) {
+                throw new InvalidValidation('Invalid JSON body');
+            }
+            if (!$body instanceof \stdClass) {
+                throw new InvalidValidation('Request body must be a JSON object');
+            }
+            $this->requestBodyParams = (array) $body;
+        } else {
             $this->requestBodyParams = $_POST;
         }
 
@@ -79,22 +89,20 @@ class Router
      * @param string $regexp
      * @param array  $route
      *
-     * @return  void
      */
     public function add(string $regexp, array $route = []): void
     {
-        self::$routes[] = ['regexp' => $regexp, 'route' => $route];
+        $this->routes[] = ['regexp' => $regexp, 'route' => $route];
     }
 
     /**
      * Add item to router table
      *
      * @return array
-     * @return  void
      */
     public function getRoutes(): array
     {
-        return self::$routes;
+        return $this->routes;
     }
 
     /**
@@ -104,13 +112,12 @@ class Router
      */
     public function getRoute(): array
     {
-        return self::$route;
+        return $this->route;
     }
 
     /**
      * Search url in router table
      *
-     * @param string $url
      *
      * @return bool
      * @throws NotAllowedException
@@ -119,13 +126,13 @@ class Router
     {
         $notAllowedError = null;
 
-        foreach (self::$routes as  $item) {
+        foreach ($this->routes as $item) {
             $pattern = $item['regexp'];
             $route = $item['route'];
 
             if (preg_match("#$pattern#i", $url, $matches)) {
                 if (!empty($route['method']) && !in_array($this->method, $route['method'])) {
-                    $notAllowedError =  'Not allowed method try next: ' . implode(',' , $route['method']);
+                    $notAllowedError =  'Not allowed method try next: ' . implode(',', $route['method']);
                     continue;
                 }
 
@@ -138,14 +145,12 @@ class Router
                 if (isset($route['controller'])) {
                     $route['controller'] = $this->upperCamelCase($route['controller']);
                 }
-                if (!isset($route['action'])) {
-                    $route['action'] = 'index';
-                }
-                self::$route = $route;
+                $route['action'] ??= 'index';
+                $this->route = $route;
                 return true;
             }
         }
-        if(!empty($notAllowedError)){
+        if (!empty($notAllowedError)) {
             throw new NotAllowedException($notAllowedError);
         }
         return false;
@@ -154,9 +159,7 @@ class Router
     /**
      * Replace url to controller path
      *
-     * @param string $url
      *
-     * @return mixed
      * @throws NotFoundException
      * @throws NotAllowedException
      */
@@ -164,10 +167,10 @@ class Router
     {
         $url = $this->removeQueryString($this->requestUri);
         if ($this->matchRoute($url)) {
-            $controller = 'TicTacToe\Controllers\\' . self::$route['controller'] . 'Controller';
+            $controller = 'TicTacToe\Controllers\\' . $this->route['controller'] . 'Controller';
             if (class_exists($controller)) {
-                $controllerObj = new $controller(self::$route);
-                $action = $this->upperCamelCase(self::$route['action'] . 'Action');
+                $controllerObj = new $controller($this->route);
+                $action = $this->upperCamelCase($this->route['action'] . 'Action');
                 if (method_exists($controllerObj, $action)) {
                     $controllerObj->$action($this);
                     return;
@@ -178,7 +181,7 @@ class Router
                 throw new NotFoundException("Controller $controller not found");
             }
         }
-       throw new NotFoundException('Route not found');
+        throw new NotFoundException('Route not found');
     }
 
     public function getRequestBody($name = null)
@@ -192,7 +195,7 @@ class Router
     /**
      *
      *
-     * @param string|null $string
+     * @param string $string
      *
      * @return string
      */
@@ -202,7 +205,7 @@ class Router
     }
 
     /**
-     * @param string|null $string
+     * @param string $string
      *
      * @return string
      */
@@ -212,7 +215,6 @@ class Router
     }
 
     /**
-     * @param string $url
      *
      * @return string
      */

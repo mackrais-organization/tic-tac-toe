@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Created by PhpStorm.
  * PHP Version: 7.4
@@ -21,7 +22,7 @@ interface IStorage
      * If the value does not exists, return $default.
      *
      * @param string $id
-     * @param null $default
+     * @param mixed $default
      * @return mixed
      */
     public function get(string $id, $default = null);

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Created by PhpStorm.
  * PHP Version: 7.4
@@ -29,7 +30,7 @@ class Board
     public const ROW_SIZE = 3;
     public const COLUMN_SIZE = 3;
 
-    private const STORAGE_KEY = 'board';
+    private const string STORAGE_KEY = 'board';
 
     protected PhpSessionStorage $storage;
     protected ?User $user;
@@ -39,7 +40,7 @@ class Board
     public function __construct()
     {
         $this->storage = new PhpSessionStorage();
-        $this->user = (new User())->get();
+        $this->user = new User()->get();
         $this->resultChecker = new ResultChecker();
         $this->miniMaxBot = new MiniMaxBot();
     }
@@ -51,44 +52,31 @@ class Board
 
     public function makeMove(?int $rowIndex, ?int $columnIndex)
     {
+        $this->validate($rowIndex, $columnIndex);
         $board = $this->getBoard();
-        $winner = null;
-        $this->resultChecker->getWinner($board, $winner);
-
-        if ($winner === null) {
-            $this->validate($rowIndex, $columnIndex);
-            $board[$rowIndex][$columnIndex] = $this->user->getSymbol();
-            $this->set($board);
-        }
-
-        $this->resultChecker->getWinner($board, $winner);
-
-        if (!$this->resultChecker->isGameOver() && $winner === null) {
-            $this->miniMaxBot->makeMove($this);
-        }
+        $board[$rowIndex][$columnIndex] = $this->user->getSymbol();
+        $this->set($board);
+        $this->miniMaxBot->makeMove($this);
     }
 
     public function validate(?int $rowIndex, ?int $columnIndex)
     {
-        if ($this->resultChecker->isGameOver()) {
-            throw new InvalidBoardUser('Game over.');
-        }
-
-        if (!($this->user instanceof User)) {
+        if (!$this->user instanceof User) {
             throw new InvalidBoardUser('Incorrect user.');
         }
-        if (!Board::isValidSymbol($this->user->getSymbol())) {
-            throw new InvalidValidation(
-                sprintf('Please use one of the following symbols: "%s".', implode('", "', Board::ALLOWED_SYMBOLS))
-            );
+        $board = $this->getBoard();
+        $winner = null;
+        $this->resultChecker->getWinner($board, $winner);
+        if ($winner !== null) {
+            throw new InvalidBoardUser('Game over.');
         }
-        if ($rowIndex === null || $columnIndex === null) {
+        if (
+            $rowIndex === null || $columnIndex === null || $rowIndex < 0 || $rowIndex >= self::ROW_SIZE
+            || $columnIndex < 0 || $columnIndex >= self::COLUMN_SIZE
+        ) {
             throw new InvalidValidation('Incorrect coordinates');
         }
-
-        $board = $this->getBoard();
-
-        if (!empty($board[$rowIndex][$columnIndex])) {
+        if ($board[$rowIndex][$columnIndex] !== null) {
             throw new InvalidValidation('Coordinates already taken');
         }
     }
@@ -124,5 +112,6 @@ class Board
     public function setUser(User $user): void
     {
         $this->user = $user;
+        $this->miniMaxBot->setUser($user);
     }
 }

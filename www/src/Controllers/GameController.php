@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Created by PhpStorm.
  * PHP Version: 7.4
@@ -10,12 +11,12 @@
  * @date       2/17/20
  */
 
-
 namespace TicTacToe\Controllers;
 
 use TicTacToe\Board\Board;
 use TicTacToe\Core\Response;
 use TicTacToe\Core\Router;
+use TicTacToe\Exception\InvalidValidation;
 use TicTacToe\User\MiniMaxBot;
 use TicTacToe\User\User;
 
@@ -24,11 +25,11 @@ class GameController
     /**
      * @var User
      */
-    private User $user;
+    private readonly User $user;
     /**
      * @var Board
      */
-    private Board $board;
+    private readonly Board $board;
 
     public function __construct()
     {
@@ -44,15 +45,19 @@ class GameController
     public function startAction(Router $router)
     {
         $params = $router->getRequestBody();
-        $symbol = $params['symbol'] ?? null;
-        $level = $params['level'] ?? '';
-        $this->user->create($params['username'] ?? '', $symbol, $level);
-
-        if($symbol === Board::SYMBOL_O){
-            $this->board->setUser($this->user->get());
-            $bot = new MiniMaxBot();
-            $bot->setUser( $this->user->get());
-            $bot->makeMove($this->board);
+        foreach (['username', 'symbol', 'level'] as $field) {
+            if (!isset($params[$field]) || !is_string($params[$field])) {
+                throw new InvalidValidation('Invalid ' . $field);
+            }
+        }
+        if ($this->user->get() === null) {
+            $this->user->create($params['username'], $params['symbol'], $params['level']);
+            $this->board->clear();
+            $this->board->setUser($this->user);
+            if ($params['symbol'] === Board::SYMBOL_O) {
+                $bot = new MiniMaxBot();
+                $bot->makeMove($this->board);
+            }
         }
 
         $this->getResponse()->send();
@@ -61,6 +66,11 @@ class GameController
     public function makeMoveAction(Router $router)
     {
         $params = $router->getRequestBody();
+        foreach (['rowIndex', 'columnIndex'] as $field) {
+            if (!isset($params[$field]) || !is_int($params[$field])) {
+                throw new InvalidValidation('Incorrect coordinates');
+            }
+        }
         $this->board->makeMove(
             $params['rowIndex'] ?? null,
             $params['columnIndex'] ?? null

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Created by PhpStorm.
  * PHP Version: 7.4
@@ -19,7 +20,7 @@ use Throwable;
 
 class NotAllowedException extends Exception
 {
-    public function __construct(string $message = "", int $code = 0, Throwable $previous = null)
+    public function __construct(string $message = "", int $code = 0, ?Throwable $previous = null)
     {
         http_response_code(405);
         parent::__construct($message, $code, $previous);

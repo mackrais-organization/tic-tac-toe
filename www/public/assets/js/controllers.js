@@ -32,6 +32,7 @@ app
       if (data.users.hasOwnProperty("player")) {
         $scope.user.username = data.users.player.userName;
         $scope.user.symbol = data.users.player.symbol;
+        $scope.user.level = data.users.player.level;
       }
       if (data.users.hasOwnProperty("bot")) {
         $scope.bot.username = data.users.bot.userName;

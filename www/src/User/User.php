@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Created by PhpStorm.
  * PHP Version: 7.4
@@ -20,7 +21,7 @@ use TicTacToe\Storage\PhpSessionStorage;
 
 class User implements IUser
 {
-    private const STORAGE_KEY = 'user';
+    private const string STORAGE_KEY = 'user';
 
     protected string $userName;
 
@@ -82,10 +83,9 @@ class User implements IUser
                 sprintf('Please use one of the following symbols: "%s".', implode('", "', Board::ALLOWED_SYMBOLS))
             );
         }
-        $level = MiniMaxBot::LEVELS[$this->level] ?? null;
-        if($level === null){
+        if (!in_array($this->level, MiniMaxBot::LEVELS, true)) {
             throw new InvalidValidation(
-                sprintf('Please use one of the following level: "%s".', implode('", "', array_keys(MiniMaxBot::LEVELS)))
+                sprintf('Please use one of the following level: "%s".', implode('", "', MiniMaxBot::LEVELS))
             );
         }
     }

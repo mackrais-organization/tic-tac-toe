@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Created by PhpStorm.
  * PHP Version: 7.4
@@ -24,7 +25,7 @@ return [
             'params' => [
                 'controller' => 'Game',
                 'action' => 'index',
-                'method'=>[ Router::METHOD_GET, Router::METHOD_OPTIONS]
+                'method' => [ Router::METHOD_GET, Router::METHOD_OPTIONS]
             ]
         ],
         [
@@ -32,7 +33,7 @@ return [
             'params' => [
                 'controller' => 'Game',
                 'action' => 'start',
-                'method'=>[ Router::METHOD_POST,  Router::METHOD_OPTIONS]
+                'method' => [ Router::METHOD_POST,  Router::METHOD_OPTIONS]
             ]
         ],
         [
@@ -40,7 +41,7 @@ return [
             'params' => [
                 'controller' => 'Game',
                 'action' => 'makeMove',
-                'method'=>[ Router::METHOD_PUT,  Router::METHOD_OPTIONS]
+                'method' => [ Router::METHOD_PUT,  Router::METHOD_OPTIONS]
             ]
         ],
         [
@@ -48,7 +49,7 @@ return [
             'params' => [
                 'controller' => 'Game',
                 'action' => 'restart',
-                'method'=>[ Router::METHOD_DELETE,  Router::METHOD_OPTIONS]
+                'method' => [ Router::METHOD_DELETE,  Router::METHOD_OPTIONS]
             ]
         ]
     ],

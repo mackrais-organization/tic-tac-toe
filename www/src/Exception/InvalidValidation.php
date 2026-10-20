@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Created by PhpStorm.
  * PHP Version: 7.4
@@ -19,7 +20,7 @@ use Throwable;
 
 class InvalidValidation extends Exception
 {
-    public function __construct(string $message = "", int $code = 0, Throwable $previous = null)
+    public function __construct(string $message = "", int $code = 0, ?Throwable $previous = null)
     {
         http_response_code(422);
         parent::__construct($message, $code, $previous);

@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Created by PhpStorm.
  * PHP Version: 7.4
@@ -31,7 +32,7 @@ class Response
     {
         $this->board = new Board();
         $this->resultChecker = new ResultChecker();
-        $this->user = (new User())->get();
+        $this->user = new User()->get();
         $this->bot = new MiniMaxBot();
     }
 
@@ -60,7 +61,8 @@ class Response
         if (!empty($this->user)) {
             $users['player'] = [
                 'userName' => $this->user->getUserName(),
-                'symbol'   => $this->user->getSymbol()
+                'symbol'   => $this->user->getSymbol(),
+                'level' => $this->user->getLevel()
             ];
         }
 

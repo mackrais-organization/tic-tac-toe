@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Created by PhpStorm.
  * PHP Version: 7.4
@@ -19,7 +20,7 @@ namespace TicTacToe\Storage;
  */
 class PhpSessionStorage implements IStorage
 {
-    private const KEY = 'mcTicTacToe';
+    private const string KEY = 'mcTicTacToe';
 
     public function get(string $id, $default = null)
     {

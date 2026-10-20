@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Created by PhpStorm.
  * PHP Version: 7.4
@@ -12,14 +13,10 @@
 
 namespace TicTacToe\Core;
 
-
 class Application
 {
-    protected array $config;
-
-    public function __construct(array $config)
+    public function __construct(protected array $config)
     {
-        $this->config = $config;
     }
 
     public function run()
