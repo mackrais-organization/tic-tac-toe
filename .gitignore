@@ -39,3 +39,6 @@ www/vendor
 # Quality tooling caches and reports
 /www/var/
 /.phpunit.cache/
+
+# Standalone design experiments
+/design/
