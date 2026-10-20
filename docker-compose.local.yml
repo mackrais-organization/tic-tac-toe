@@ -1,0 +1,12 @@
+services:
+  caddy:
+    volumes:
+      - ./www/public:/application/public:ro
+      - ./.docker/caddy/Caddyfile:/etc/caddy/Caddyfile:ro
+
+  php-fpm:
+    volumes:
+      - ./www/src:/application/src:ro
+      - ./www/config:/application/config:ro
+      - ./www/public:/application/public:ro
+      - ./.docker/php-fpm/local.ini:/usr/local/etc/php/conf.d/99-local.ini:ro

@@ -1,0 +1,19 @@
+{
+	auto_https off
+	admin off
+}
+
+:80 {
+	root * /application/public
+	encode zstd gzip
+	log
+
+	@hidden path /.git/* /.env /.env.*
+	respond @hidden 404
+
+	# The AngularJS entrypoint is index.html; API paths fall back to index.php.
+	php_fastcgi php-fpm:9000 {
+		try_files {path} {path}/index.html {path}/index.php index.php
+	}
+	file_server
+}

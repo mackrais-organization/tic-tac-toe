@@ -1,0 +1,8 @@
+.git
+.idea
+.env
+.env.*
+www/vendor
+www/logs
+node_modules
+www/var

@@ -1,21 +1,16 @@
-FROM phpdockerio/php:8.2-fpm
-WORKDIR "/application"
+FROM php:8.5-fpm-alpine
 
-ENV PHP_V=8.2
-ENV TERM='xterm-256color'
+COPY --from=composer:2 /usr/bin/composer /usr/local/bin/composer
+WORKDIR /application
 
-# Fix debconf warnings upon build
-ARG DEBIAN_FRONTEND=noninteractive
+RUN cp "$PHP_INI_DIR/php.ini-production" "$PHP_INI_DIR/php.ini" \
+    && mkdir -p /var/lib/php/sessions \
+    && chown www-data:www-data /var/lib/php/sessions \
+    && chmod 700 /var/lib/php/sessions
 
-# Install selected extensions and other stuff
-RUN apt-get update && apt-get -y dist-upgrade\
-   && apt-get -y install apt-utils locales git mc\
-   && apt-get clean; rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* /usr/share/doc/*
-RUN apt-get update\
-    && apt-get -y --no-install-recommends install php${PHP_V}-bcmath php${PHP_V}-json php${PHP_V}-mbstring php-xdebug\
-    && apt-get clean; rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* /usr/share/doc/*
-RUN curl -sSk https://getcomposer.org/installer | php -- --disable-tls && \
-   mv composer.phar /usr/local/bin/composer
-
-RUN apt-get update && apt-get -y dist-upgrade\
-   && apt-get clean; rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* /usr/share/doc/*
+COPY .docker/php-fpm/php-ini-overrides.ini /usr/local/etc/php/conf.d/90-application.ini
+COPY www/composer.json www/composer.lock ./
+COPY www/src ./src
+RUN composer install --no-dev --prefer-dist --no-interaction --no-progress --optimize-autoloader
+COPY www/config ./config
+COPY www/public ./public
