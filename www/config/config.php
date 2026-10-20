@@ -21,6 +21,14 @@ return [
      */
     'routes' => [
         [
+            'rule' => '^api/v1/game/undo$',
+            'params' => [
+                'controller' => 'Game',
+                'action' => 'undo',
+                'method' => [Router::METHOD_POST]
+            ]
+        ],
+        [
             'rule' => '^api/v1/game$',
             'params' => [
                 'controller' => 'Game',

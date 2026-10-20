@@ -67,6 +67,10 @@ class Response
         }
 
         $data = [
+            'mode' => $this->board->getMode(),
+            'roundId' => $this->board->getRoundId(),
+            'turn' => $this->board->getTurn(),
+            'canUndo' => $this->board->canUndo(),
             'board' => $board,
             'game'  => $game,
             'users' => $users,

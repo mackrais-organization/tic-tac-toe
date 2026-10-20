@@ -30,6 +30,68 @@ final class BoardTest extends SessionTestCase
     }
 
     #[Test]
+    public function alternatesLocalPlayersAndUndoesOneMove(): void
+    {
+        $this->board->startMatch('duo');
+        $id = $this->board->getRoundId();
+        $this->assertNotNull($id);
+        $this->assertSame('duo', $this->board->getMode());
+        $this->assertFalse($this->board->canUndo());
+        $this->board->makeMove(0, 0);
+        $this->assertSame('O', $this->board->getTurn());
+        $this->assertSame([['X', null, null], [null, null, null], [null, null, null]], $this->board->getBoard());
+        $this->board->makeMove(1, 1);
+        $this->assertSame('X', $this->board->getTurn());
+        $this->assertSame('O', $this->board->getBoard()[1][1]);
+        $this->board->undo();
+        $this->assertSame('O', $this->board->getTurn());
+        $this->assertNull($this->board->getBoard()[1][1]);
+        $this->assertTrue($this->board->canUndo());
+        $this->board->undo();
+        $this->assertFalse($this->board->canUndo());
+        $this->board->startMatch('solo');
+        $this->assertNotSame($id, $this->board->getRoundId());
+        $this->assertSame('solo', $this->board->getMode());
+    }
+
+    #[Test]
+    public function undoesHumanAndBotTogether(): void
+    {
+        $before = $this->board->getBoard();
+        $this->board->makeMove(0, 0);
+        $this->assertTrue($this->board->canUndo());
+        $this->board->undo();
+        $this->assertSame($before, $this->board->getBoard());
+        $this->expectException(InvalidValidation::class);
+        $this->board->undo();
+    }
+
+    #[Test]
+    public function rejectsUndoAfterScoredResult(): void
+    {
+        $this->board->startMatch('duo');
+        foreach ([[0, 0], [1, 0], [0, 1], [1, 1], [0, 2]] as [$row, $column]) {
+            $this->board->makeMove($row, $column);
+        }
+        $this->assertFalse($this->board->canUndo());
+        $this->expectException(InvalidValidation::class);
+        $this->board->undo();
+    }
+
+    #[Test]
+    public function rejectsInvalidModeWithoutClearingMatch(): void
+    {
+        $this->board->makeMove(0, 0);
+        $before = $this->board->getBoard();
+        try {
+            $this->board->startMatch('invalid');
+            $this->fail('Invalid mode was accepted');
+        } catch (InvalidValidation) {
+            $this->assertSame($before, $this->board->getBoard());
+        }
+    }
+
+    #[Test]
     public function playsBothTurnsAndClearsBoard(): void
     {
         $this->board->makeMove(0, 0);

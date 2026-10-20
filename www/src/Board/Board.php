@@ -54,9 +54,14 @@ class Board
     {
         $this->validate($rowIndex, $columnIndex);
         $board = $this->getBoard();
-        $board[$rowIndex][$columnIndex] = $this->user->getSymbol();
+        $history = $this->storage->get('history', []);
+        $history[] = $board;
+        $this->storage->set('history', $history);
+        $board[$rowIndex][$columnIndex] = $this->getMode() === 'duo' ? $this->getTurn() : $this->user->getSymbol();
         $this->set($board);
-        $this->miniMaxBot->makeMove($this);
+        if ($this->getMode() === 'solo') {
+            $this->miniMaxBot->makeMove($this);
+        }
     }
 
     public function validate(?int $rowIndex, ?int $columnIndex)
@@ -88,9 +93,55 @@ class Board
 
     public function clear()
     {
+        $this->storage->delete('history');
+        $this->storage->delete('mode');
+        $this->storage->delete('roundId');
         if ($this->storage->has(self::STORAGE_KEY)) {
             $this->storage->delete(self::STORAGE_KEY);
         }
+    }
+
+    public function startMatch(string $mode): void
+    {
+        if (!in_array($mode, ['solo', 'duo'], true)) {
+            throw new InvalidValidation('Invalid game mode');
+        }
+        $this->clear();
+        $this->storage->set('mode', $mode);
+        $this->storage->set('roundId', bin2hex(random_bytes(16)));
+    }
+
+    public function getMode(): string
+    {
+        return $this->storage->get('mode', 'solo');
+    }
+
+    public function getRoundId(): ?string
+    {
+        return $this->storage->get('roundId');
+    }
+
+    public function getTurn(): string
+    {
+        $occupied = count(array_filter(array_merge(...$this->getBoard())));
+        return $occupied % 2 === 0 ? self::SYMBOL_X : self::SYMBOL_O;
+    }
+
+    public function canUndo(): bool
+    {
+        $winner = null;
+        $this->resultChecker->getWinner($this->getBoard(), $winner);
+        return $winner === null && $this->storage->get('history', []) !== [];
+    }
+
+    public function undo(): void
+    {
+        if (!$this->canUndo()) {
+            throw new InvalidValidation('No turn to undo');
+        }
+        $history = $this->storage->get('history', []);
+        $this->set(array_pop($history));
+        $this->storage->set('history', $history);
     }
 
     public static function isValidSymbol(string $symbol): bool

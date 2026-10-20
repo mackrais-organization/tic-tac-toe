@@ -64,6 +64,25 @@ def check_api(base):
     reset = request('DELETE')
     assert reset['board'] == [[None] * 3 for _ in range(3)]
     assert 'player' not in reset['users']
+    request('POST', {'username': 'Local', 'symbol': 'X', 'level': 'normal', 'mode': []}, 422)
+    local = request('POST', {'username': 'Local', 'symbol': 'O', 'level': 'normal', 'mode': 'duo'})
+    assert local['mode'] == 'duo' and local['turn'] == 'X'
+    assert local['board'] == [[None] * 3 for _ in range(3)], 'Duo must not invoke bot'
+    request('POST', {}, 422, '/api/v1/game/undo')
+    first = request('PUT', {'rowIndex': 0, 'columnIndex': 0})
+    assert first['turn'] == 'O' and first['board'][0][0] == 'X'
+    assert request('GET') == first, 'Refresh must restore match and undo state'
+    undone = request('POST', {}, path='/api/v1/game/undo')
+    assert undone['board'] == local['board'] and not undone['canUndo']
+    for r, c in [(0, 0), (1, 0), (0, 1), (1, 1), (0, 2)]:
+        final = request('PUT', {'rowIndex': r, 'columnIndex': c})
+    assert final['game']['winner'] == 'X'
+    assert final['game']['coordinates'] == [[0, 0], [0, 1], [0, 2]]
+    request('POST', {}, 422, '/api/v1/game/undo')
+    request('PUT', {'rowIndex': 2, 'columnIndex': 2}, 400)
+    request('DELETE')
+    fresh = request('POST', {'username': 'Local', 'symbol': 'X', 'level': 'normal'})
+    assert fresh['roundId'] != local['roundId'] and fresh['mode'] == 'solo'
     print('HTTP smoke tests passed: validation, sessions, repeated start, moves, reset, 404/405/410.')
 
 

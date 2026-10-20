@@ -50,11 +50,15 @@ class GameController
                 throw new InvalidValidation('Invalid ' . $field);
             }
         }
+        $mode = $params['mode'] ?? 'solo';
+        if (!in_array($mode, ['solo', 'duo'], true)) {
+            throw new InvalidValidation('Invalid game mode');
+        }
         if ($this->user->get() === null) {
             $this->user->create($params['username'], $params['symbol'], $params['level']);
-            $this->board->clear();
+            $this->board->startMatch($mode);
             $this->board->setUser($this->user);
-            if ($params['symbol'] === Board::SYMBOL_O) {
+            if ($mode === 'solo' && $params['symbol'] === Board::SYMBOL_O) {
                 $bot = new MiniMaxBot();
                 $bot->makeMove($this->board);
             }
@@ -75,6 +79,12 @@ class GameController
             $params['rowIndex'] ?? null,
             $params['columnIndex'] ?? null
         );
+        $this->getResponse()->send();
+    }
+
+    public function undoAction()
+    {
+        $this->board->undo();
         $this->getResponse()->send();
     }
 
