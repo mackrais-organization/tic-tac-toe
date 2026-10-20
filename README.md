@@ -6,6 +6,33 @@ Try your hand against our wonderful bot. ***MackRais MiniMax Bot v1.0.3***.
 The bot uses the [Minimax Algorithm] to decide its moves. You can see it on [TicTacToe\User\MiniMaxBot].
 You can try game here [http://tic-tac-toe.mackrais.com](http://tic-tac-toe.mackrais.com)
 
+## Screenshots
+
+Main menu, local multiplayer with a clear turn indicator, and a completed round.
+
+<p align="center">
+  <a href="previews/mobile.png"><img src="previews/mobile.png" width="250" alt="Mobile main menu with computer and two-player modes"></a>
+  <a href="previews/two-players.png"><img src="previews/two-players.png" width="250" alt="Two human players with Player 2 highlighted as the next to move"></a>
+  <a href="previews/winner.png"><img src="previews/winner.png" width="250" alt="Winning row crossed out with the round result below the board"></a>
+</p>
+
+<details>
+<summary>Desktop, light theme and settings</summary>
+
+### Desktop game
+
+![Desktop game against MiniMax](previews/dark.png)
+
+### Light theme
+
+<img src="previews/light-mobile.png" width="300" alt="Mobile game in the light theme">
+
+### Settings
+
+![Game settings for mode, difficulty, symbol and theme](previews/settings.png)
+
+</details>
+
 ## Game interface
 
 The responsive game has separate menu and match screens, local two-player mode,
