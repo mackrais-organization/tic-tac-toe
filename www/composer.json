@@ -3,7 +3,10 @@
   "description": "Tic Tac Toe Game. User vs bot",
   "type": "project",
   "config": {
-    "sort-packages": true
+    "sort-packages": true,
+    "allow-plugins": {
+      "infection/extension-installer": false
+    }
   },
   "autoload": {
     "psr-4": {
@@ -16,6 +19,52 @@
   },
   "scripts": {
     "serve": "php -S 0.0.0.0:4000 -t public/",
-    "serve-xdebug": "php -dxdebug.remote_enable=1 -dxdebug.remote_mode=req -dxdebug.remote_port=9000 -dxdebug.remote_host=127.0.0.1 -dxdebug.remote_connect_back=0 -S 0.0.0.0:4001 -t public/"
+    "serve-xdebug": "php -dxdebug.mode=debug -dxdebug.start_with_request=yes -S 127.0.0.1:4001 -t public/",
+    "ci:composer-validate": "@composer validate --strict",
+    "ci:composer-audit": "@composer audit",
+    "ci:composer-unused": "composer-unused",
+    "format": "php-cs-fixer fix",
+    "ci:code-style-php-cs-fixer": "php-cs-fixer fix --dry-run --diff",
+    "ci:code-style-phpcs": "phpcs",
+    "ci:static-analysis": "phpstan analyse --memory-limit=512M",
+    "ci:rector": "rector process --dry-run",
+    "ci:phpunit": "phpunit",
+    "test": "@ci:phpunit",
+    "test:parallel": "paratest --processes=2",
+    "ci:coverage": "@php -d xdebug.mode=coverage vendor/bin/phpunit --coverage-clover var/coverage/clover.xml --coverage-html var/coverage/html --coverage-xml var/coverage/xml --log-junit var/coverage/junit.xml",
+    "ci:infection": "@php -d xdebug.mode=coverage vendor/bin/infection --threads=2 --no-progress",
+    "ci:quality": [
+      "@ci:composer-validate",
+      "@ci:composer-audit",
+      "@ci:composer-unused",
+      "@ci:code-style-php-cs-fixer",
+      "@ci:code-style-phpcs",
+      "@ci:static-analysis",
+      "@ci:rector"
+    ],
+    "ci:pack": [
+      "@ci:quality",
+      "@ci:coverage",
+      "@test:parallel",
+      "@ci:http",
+      "@ci:infection"
+    ],
+    "ci:http": "python3 ../scripts/test-http.py"
+  },
+  "require-dev": {
+    "brianium/paratest": "^7.20",
+    "friendsofphp/php-cs-fixer": "^3.95",
+    "icanhazstring/composer-unused": "^0.9.6",
+    "infection/infection": "^0.35.8",
+    "phpstan/phpstan": "^2.3",
+    "phpunit/phpunit": "^12.5",
+    "rector/rector": "^2.7",
+    "squizlabs/php_codesniffer": "^4.0"
+  },
+  "license": "ISC",
+  "autoload-dev": {
+    "psr-4": {
+      "TicTacToe\\Tests\\": "tests/"
+    }
   }
 }

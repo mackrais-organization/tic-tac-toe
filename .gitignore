@@ -35,3 +35,7 @@ tests/_support/_generated
 
 www/public/.well-known
 www/vendor
+
+# Quality tooling caches and reports
+/www/var/
+/.phpunit.cache/

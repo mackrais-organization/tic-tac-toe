@@ -4,7 +4,7 @@
   "description": "A good old game of tic tac toe. Try your hand against our wonderful bot. MackRais MiniMax Bot.",
   "main": "www/public/index.html",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "composer --working-dir=www test"
   },
   "repository": {
     "type": "git",
@@ -29,5 +29,7 @@
     "url": "https://github.com/mackrais/tic-tac-toe/issues"
   },
   "homepage": "https://tic-tac-toe.mackrais.com",
-  "publishConfig": { "registry": "https://npm.pkg.github.com/" }
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com/"
+  }
 }

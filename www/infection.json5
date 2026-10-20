@@ -1,0 +1,10 @@
+{
+    "$schema": "vendor/infection/infection/resources/schema.json",
+    "source": {"directories": ["src/Board", "src/Game", "src/User", "src/Storage"]},
+    "logs": {"text": "var/infection/infection.log", "summary": "var/infection/summary.log", "html": "var/infection/report.html"},
+    "tmpDir": "var/cache/infection",
+    "minMsi": 80,
+    "minCoveredMsi": 85,
+    "mutators": {"@default": true},
+    "testFrameworkOptions": "--exclude-group exhaustive"
+}
