@@ -1,10 +1,23 @@
-# MackRais Tic Tac Toe (AngularJs + PHP) 
+# MackRais Tic Tac Toe (JavaScript + PHP)
 
 ## Description
 A good old game of tic tac toe.
 Try your hand against our wonderful bot. ***MackRais MiniMax Bot v1.0.3***.
 The bot uses the [Minimax Algorithm] to decide its moves. You can see it on [TicTacToe\User\MiniMaxBot].
 You can try game here [http://tic-tac-toe.mackrais.com](http://tic-tac-toe.mackrais.com)
+
+## Game interface
+
+The responsive game has separate menu and match screens, local two-player mode,
+three computer difficulties, explicit turn indicators and animated winning lines.
+PHP owns the board, bot moves, results and undo history for both modes. Reloading
+restores the current session through Continue. Preferences and match scores are
+stored in this browser; they are not an account or a competitive leaderboard.
+
+`POST /api/v1/game` accepts optional `mode` (`solo` or `duo`, default `solo`).
+`POST /api/v1/game/undo` undoes the last player turn (including the computer reply
+in solo mode). Completed rounds cannot be undone. Responses include `mode`,
+`roundId`, `turn` and `canUndo` alongside the existing board, users and result.
 
 ## Getting Started
 

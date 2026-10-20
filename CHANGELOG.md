@@ -5,6 +5,8 @@ Notable changes are recorded here. Versioned entries use Semantic Versioning.
 ## [Unreleased]
 
 ### Added
+- Responsive game menu and match screens, clear player turn indicators, themes, sound and animated winning lines.
+- Server-backed local two-player mode, undo history and match restoration with per-browser scores.
 - PHPUnit tests for game rules, bot tactics, user validation, session storage and routing.
 - Exhaustive verification that the hard bot cannot lose as either symbol.
 - HTTP regression checks for malformed requests, repeated starts and session persistence.

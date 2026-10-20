@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
     <link rel="icon" href="./favicon/favicon.svg" type="image/svg+xml">
@@ -21,152 +21,52 @@
     <meta name="msapplication-TileColor" content="#101d31">
     <meta name="msapplication-TileImage" content="./favicon/ms-icon-144x144.png">
     <meta name="theme-color" content="#101d31">
-    <meta charset="UTF-8">
-    <title>Tic Tac Toe - game (Mackrais)</title>
-    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css"
-          integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
-    <link href="https://fonts.googleapis.com/css?family=Lacquer&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css?family=Gochi+Hand&display=swap" rel="stylesheet">
-    <link href="./assets/css/main.css" rel="stylesheet">
-    <link href="./assets/css/mr.preloader.css" rel="stylesheet">
-    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/angularjs/1.7.9/angular.min.js"></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Tic Tac Toe · MackRais</title>
+  <link rel="stylesheet" href="./assets/css/game.css">
+  <script src="./assets/js/game.js" defer></script>
 </head>
-<body ng-app="app">
+<body>
+  <main class="game-app">
+    <div id="api-error" class="api-error" role="alert" hidden></div>
+    <header class="game-header">
+      <button id="back-to-menu" class="icon-button back-button" aria-label="Back to main menu" hidden><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m14 6-6 6 6 6"/></svg></button>
+      <span class="header-brand">MACKRAIS<span>GAMES</span></span>
+      <div class="header-actions"><button class="icon-button" id="sound-toggle" aria-label="Turn sound on" aria-pressed="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M11 5 6 9H3v6h3l5 4V5Z"/><path class="sound-waves" d="M15 8a6 6 0 0 1 0 8m3-11a10 10 0 0 1 0 14"/></svg></button><button class="icon-button" id="open-settings" aria-label="Game settings"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M18.837 9.168 L20.999 10.087 L20.999 13.913 L18.837 14.832 L18.837 14.832 L19.716 17.011 L17.011 19.716 L14.832 18.837 L14.832 18.837 L13.913 20.999 L10.087 20.999 L9.168 18.837 L9.168 18.837 L6.989 19.716 L4.284 17.011 L5.163 14.832 L5.163 14.832 L3.001 13.913 L3.001 10.087 L5.163 9.168 L5.163 9.168 L4.284 6.989 L6.989 4.284 L9.168 5.163 L9.168 5.163 L10.087 3.001 L13.913 3.001 L14.832 5.163 L14.832 5.163 L17.011 4.284 L19.716 6.989 L18.837 9.168 Z"/><circle cx="12" cy="12" r="3"/></svg></button></div>
+    </header>
 
-<section loading-listener></section>
-<section error-block></section>
+    <section class="screen menu-screen" id="menu-screen" aria-label="Main menu">
+      <div class="game-logo" aria-hidden="true"><span class="logo-o"></span><span class="logo-x"></span><span class="logo-spark spark-one"></span><span class="logo-spark spark-two"></span></div>
+      <h1>TIC <span>TAC</span> TOE</h1>
+      <p class="menu-subtitle">YOUR MOVE.</p>
+      <div class="menu-buttons">
+        <button id="play-computer" class="menu-button play-button"><span class="button-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m8 5 11 7-11 7Z"/></svg></span><span>PLAY COMPUTER<small id="menu-difficulty">Normal difficulty</small></span><span class="menu-chevron" aria-hidden="true">›</span></button>
+        <button id="play-friend" class="menu-button friend-button"><span class="button-icon"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="8" cy="7" r="3"/><path d="M2 20v-3a6 6 0 0 1 12 0v3m2-16a3 3 0 0 1 0 6m2 3a6 6 0 0 1 4 6"/></svg></span><span>TWO PLAYERS<small>On the same device</small></span><span class="menu-chevron" aria-hidden="true">›</span></button>
+        <button id="continue-game" class="continue-button" hidden>Continue current round <span aria-hidden="true">→</span></button>
+      </div>
+      <div class="menu-tools"><button id="menu-settings">Settings</button><span>·</span><button id="show-rules">How to play</button></div>
+      <section class="menu-score" aria-label="Match score"><div class="score-heading"><span>YOUR RECORD</span><button id="reset-score" class="text-button" aria-label="Reset score">Reset</button></div><div class="score-row"><div><b id="wins">0</b><span id="wins-label">You</span></div><div><b id="draws">0</b><span>Draws</span></div><div><b id="losses">0</b><span id="losses-label">MiniMax</span></div></div><div class="score-footer"><span id="score-message">No rounds played</span><span id="history" class="history" aria-label="Recent results"></span></div></section>
+    </section>
 
-<div id="wrapper" ng-controller="baseCtrl" class="container h-100 ">
+    <section class="screen play-screen game-card" id="play-screen" aria-label="Game" hidden>
+      <div class="match-type"><span id="match-type">VS COMPUTER</span><span class="level-tag" id="game-level">NORMAL</span></div>
+      <div class="players">
+        <div class="player active" id="human-player"><div class="avatar human-avatar"><svg viewBox="0 0 64 64" aria-hidden="true"><circle cx="32" cy="23" r="10"/><path d="M14 53v-5a18 18 0 0 1 36 0v5"/></svg><span class="symbol-badge"><i class="mark mark-x" id="human-avatar"></i></span></div><span class="player-name" id="human-name">You</span><span class="player-caption" id="human-caption">Playing as X</span><span class="active-dot" aria-hidden="true"></span></div>
+        <div class="match-score"><span>MATCH</span><div><b id="game-wins">0</b><i>:</i><b id="game-losses">0</b></div><small><span id="game-draws">0</span> draws</small></div>
+        <div class="player" id="bot-player"><div class="avatar bot-avatar"><svg id="opponent-art" viewBox="0 0 64 64" aria-hidden="true"><rect x="12" y="17" width="40" height="34" rx="10"/><path d="M32 9v8M8 30v8m48-8v8M24 30v5m16-5v5M25 43h14"/></svg><span class="symbol-badge"><i class="mark mark-o" id="bot-avatar"></i></span></div><span class="player-name" id="opponent-name">MiniMax</span><span class="player-caption" id="opponent-caption">Computer</span><span class="active-dot" aria-hidden="true"></span></div>
+      </div>
+      <div class="turn-status" role="status" aria-live="polite" aria-atomic="true"><span class="status-dot"></span><span id="status-text">Your move</span><span id="round-message">X goes first</span></div>
+      <div class="board-shell"><div class="board" id="board" role="group" aria-label="Tic-tac-toe board"></div><svg class="win-line" id="win-line" viewBox="0 0 300 300" aria-hidden="true"><line x1="25" y1="50" x2="275" y2="50" pathLength="1"/></svg><div class="victory-burst" id="victory-burst" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i></div></div>
+      <div class="round-result" id="round-result" hidden><span id="result-label">YOU WIN</span><small id="result-detail">Three in a row.</small></div>
+      <p class="board-caption" id="board-caption">Select an empty square.</p>
+      <div class="game-actions"><button class="secondary-button" id="undo" disabled><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 5-5 5 5 5M4 10h9a6 6 0 0 1 0 12"/></svg><span>Undo</span></button><button class="primary-button" id="new-round"><span id="new-round-label">NEW ROUND</span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 10a8 8 0 1 0-1 8M20 4v6h-6"/></svg></button></div>
+    </section>
+    <footer class="game-footer">MiniMax Bot <span>v1.0.3</span><span class="footer-divider">/</span><button id="footer-menu" hidden>Main menu</button><span id="footer-credit">by MackRais</span></footer>
+  </main>
 
-    <div ng-controller="startGameCtrl" ng-show="!gameStarted">
-
-        <div class="row align-items-center justify-content-center align-content-center" style="min-height: 100%">
-            <div class="col-12 pt-1 pt-sm-2 pb-1 pb-sm-3">
-                <div class="row">
-                    <div class="col text-center">
-                        <h1>Tic Tac Toe</h1>
-                        <h4>Show me what you can do.</h4>
-                    </div>
-                </div>
-            </div>
-            <form ng-submit="start()" class="sign-in box-shadow">
-                <div class="form-group">
-                    <p>
-                        Your Symbol:
-                        <i ng-class="{'symbol-X': $parent.user.symbol == 'X', 'symbol-O': $parent.user.symbol == 'O'}"></i>
-                        Your Level: <strong ng-bind="getLevel().label"></strong>
-                    </p>
-                </div>
-
-                <div class="input-group ">
-                    <input class="form-control" id="username" ng-model="$parent.user.username" required autofocus>
-                </div>
-
-                <!--                -->
-                <div class="row radio-btn-list-inline ">
-
-                    <div class="radio-btn-item col" ng-repeat="(key, item) in levels">
-                        <input value="easy" ng-value="item.level" type="radio" class="radio-btn-input" name="select" id="option-{{item.level}}" ng-model="$parent.user.level">
-                        <label for="option-{{item.level}}" class="radio-btn-label option">
-                            <div class="dot"></div>
-                            <span ng-bind="item.label"></span>
-                        </label>
-                    </div>
-
-                </div>
-                <!--                -->
-
-
-                <div class="form-group">
-                    <input id="radio-x" class="radio-custom radio-x" name="radio-group" type="radio"
-                           ng-model="$parent.user.symbol" ng-value="'X'">
-                    <label for="radio-x" class="radio-custom-label"></label>
-
-                    <strong>Please select your symbol</strong>
-
-                    <input id="radio-o" class="radio-custom radio-o" name="radio-group" type="radio"
-                           ng-model="$parent.user.symbol" ng-value="'O'">
-                    <label for="radio-o" class="radio-custom-label"></label>
-
-                </div>
-                <button type="submit" class="btn btn-primary circle-btn-125">Start Game</button>
-            </form>
-        </div>
-    </div>
-
-
-    <div class="box-shadow " ng-show="gameStarted">
-        <h1 ng-show="gameStarted" class="text-center">
-            Hello, <strong ng-bind="user.username"></strong>!
-        </h1>
-        <p class="text-center" ng-show="gameStarted">
-            <small>Your symbol <i ng-bind="user.symbol"></i></small>
-        </p>
-
-
-        <div class="text-center" ng-show="gameStarted && !!winner">
-            <div ng-show="winner === bot.symbol" class="alert alert-danger alert-dismissible fade show" role="alert">
-                <strong>Game over! </strong> I'm sorry, but you lost. Winner <strong ng-bind="bot.username"></strong>
-            </div>
-            <div ng-show="winner === user.symbol" class="alert alert-success alert-dismissible fade show" role="alert">
-                Congratulation <strong ng-bind="user.username"></strong>. You won!
-            </div>
-            <div ng-show="winner === DRAW" class="alert alert-warning alert-dismissible fade show" role="alert">
-                A draw. Not bad. I underestimated you.
-            </div>
-        </div>
-
-
-        <div class="border-area " ng-controller="boardCtrl">
-            <div class="row justify-content-center align-items-center">
-                <div class="col-11 col-sm-8 col-md-7 col-lg-6 col-xl-4 text-center">
-                    <div ng-repeat="(rowIndex, rows) in $parent.board" class="border-area-rows">
-                        <div class="row board" id="row-{{rowIndex}}">
-                            <div
-                                    class="col-4 d-flex justify-content-center align-items-center cell"
-                                    ng-click="makeMove(rowIndex,colIndex)"
-                                    ng-class="{'empty': !cell, 'winner-cell': isWinCell([rowIndex,colIndex]), 'red-symbol': cell === 'X'}"
-                                    ng-repeat="(colIndex, cell) in rows track by $index">
-                                <i ng-bind="cell || user.symbol" class="symbol"></i>
-                            </div>
-                        </div>
-                    </div>
-                    <button class="btn btn-primary mt-5 " ng-click="restartGame()">Restart game</button>
-                </div>
-            </div>
-        </div>
-    </div>
-</div>
-
-<style>
-    .header {
-        font-style: italic;
-        font-family: 'Comic-Sans', serif;
-        margin: 20px 0;
-    }
-    .square {
-        background-color: black;
-        height: 190px;
-        border: 2px solid white;
-    }
-    span {
-        font-size: 124px;
-        color: white;
-        text-align: center;
-    }
-    .playAgain {
-        margin: 0 0 20px;
-    }
-</style>
-
-
-
-<script type="text/javascript" src="./assets/js/app.js"></script>
-<script type="text/javascript" src="./assets/js/components/http-error.component.js"></script>
-<script type="text/javascript" src="./assets/js/components/preloader/preloader.component.js"></script>
-<script type="text/javascript" src="./assets/js/factories.js"></script>
-<script type="text/javascript" src="./assets/js/controllers.js"></script>
-
-
+  <dialog id="settings-dialog"><form method="dialog"><div class="dialog-heading"><h2>SETTINGS</h2><button class="icon-button close-dialog" aria-label="Close settings" value="close">×</button></div><label class="name-field">Your name<input id="nickname" maxlength="24" autocomplete="nickname" value="You"></label><fieldset class="mode-switch"><legend>Game mode</legend><label><input type="radio" name="mode" value="solo" checked><span>Computer</span></label><label><input type="radio" name="mode" value="duo"><span>Two players</span></label></fieldset><fieldset id="difficulty-field"><legend>Difficulty <span id="difficulty-badge">Normal</span></legend><div class="difficulty-options"><label><input type="radio" name="difficulty" value="easy"><span>Easy</span></label><label><input type="radio" name="difficulty" value="normal" checked><span>Normal</span></label><label><input type="radio" name="difficulty" value="hard"><span>Hard</span></label></div><p class="field-description" id="difficulty-description">Blocks immediate threats. Can miss forks.</p></fieldset><fieldset><legend>You play as <span>X goes first</span></legend><div class="symbol-options"><label><input type="radio" name="symbol" value="X" checked><span><i class="mark mark-x" aria-hidden="true"></i>Crosses</span></label><label><input type="radio" name="symbol" value="O"><span><i class="mark mark-o" aria-hidden="true"></i>Noughts</span></label></div></fieldset><div class="appearance-row"><span>Light theme</span><button type="button" id="theme-toggle" class="theme-toggle" aria-label="Switch to light theme" aria-pressed="false"><span></span></button></div><p class="settings-note">Changing game settings starts a new round.</p><button class="primary-button dialog-done" value="close">DONE</button></form></dialog>
+  <dialog id="reset-dialog"><form method="dialog"><h2>RESET YOUR RECORD?</h2><p>The current round stays on the board. Only your score for this game mode will be cleared.</p><div class="dialog-actions"><button class="secondary-button" value="cancel">Cancel</button><button class="primary-button" value="reset">Reset score</button></div></form></dialog>
+  <dialog id="rules-dialog"><form method="dialog"><h2>HOW TO PLAY</h2><ol><li>X moves first. Take turns placing your mark in an empty square.</li><li>Get three in a row, column or diagonal to win.</li><li>If the board fills up without a winner, it’s a draw.</li></ol><p>Normal blocks immediate threats. Hard looks ahead through every possible move.</p><button class="primary-button dialog-done">GOT IT</button></form></dialog>
 </body>
 </html>
